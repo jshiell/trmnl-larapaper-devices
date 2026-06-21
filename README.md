@@ -1,6 +1,6 @@
 # LaraPaper for Home Assistant
 
-A Home Assistant integration for [LaraPaper](https://github.com/jamesshiell/larapaper) — a self-hosted server that manages [TRMNL](https://usetrmnl.com) e-ink display devices.
+A Home Assistant integration for [LaraPaper](https://github.com/usetrmnl/larapaper) — a self-hosted server that manages [TRMNL](https://usetrmnl.com) e-ink display devices.
 
 Each device on your LaraPaper server is exposed in Home Assistant as a device with sensors, a binary sensor, and an image entity.
 
@@ -22,8 +22,8 @@ For each device:
 
 ## Requirements
 
-- A running [LaraPaper](https://github.com/jamesshiell/larapaper) server
-- A bearer token from your LaraPaper instance
+- A running [LaraPaper](https://github.com/usetrmnl/larapaper) server
+- A bearer token from your LaraPaper instance, which you can get from `<server>/plugin/api`.
 - Home Assistant 2024.1 or later
 
 ## Installation
