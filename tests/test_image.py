@@ -35,6 +35,11 @@ class TestImageEntity:
         image.hass = hass
         assert image.image_url == "http://example.com/screen.png"
 
+    def test_last_updated_set_on_init(self, hass, coordinator):
+        image = LaraPaperImage(coordinator, 8)
+        image.hass = hass
+        assert image.image_last_updated is not None
+
     def test_last_updated_bumped_when_image_changes(self, hass, coordinator):
         image = LaraPaperImage(coordinator, 8)
         image.hass = hass

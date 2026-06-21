@@ -21,13 +21,14 @@ class LaraPaperImage(LaraPaperEntity, ImageEntity):
         ImageEntity.__init__(self, coordinator.hass)
         self._attr_unique_id = f"{DOMAIN}_{device_id}_current_screen"
         self._last_url: str | None = None
+        self._refresh_last_updated()
 
     @property
     def image_url(self) -> str | None:
         return self._device_data["status"].get("current_screen_image")
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
+    def _refresh_last_updated(self) -> None:
+        """Bump image_last_updated when the screen URL changes."""
         current_url = self._device_data["status"].get("current_screen_image")
         if current_url != self._last_url:
             self._last_url = current_url
@@ -35,6 +36,10 @@ class LaraPaperImage(LaraPaperEntity, ImageEntity):
             self._attr_image_last_updated = (
                 dt_util.parse_datetime(updated_at) if updated_at else dt_util.utcnow()
             )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        self._refresh_last_updated()
         super()._handle_coordinator_update()
 
 
