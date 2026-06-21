@@ -1,7 +1,7 @@
 """Tests for LaraPaperApiClient."""
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from aiohttp import ClientResponseError, RequestInfo
+from aiohttp import ClientConnectionError, ClientResponseError, RequestInfo
 from yarl import URL
 
 from custom_components.larapaper.api import (
@@ -66,6 +66,13 @@ class TestGetDevices:
         err = ClientResponseError(req_info, (), status=500)
         resp = make_response(500, raise_for_status=err)
         mock_session.get = MagicMock(return_value=resp)
+
+        client = LaraPaperApiClient("http://server", "token", mock_session)
+        with pytest.raises(LaraPaperApiError):
+            await client.get_devices()
+
+    async def test_raises_api_error_on_connection_error(self, mock_session):
+        mock_session.get = MagicMock(side_effect=ClientConnectionError())
 
         client = LaraPaperApiClient("http://server", "token", mock_session)
         with pytest.raises(LaraPaperApiError):
