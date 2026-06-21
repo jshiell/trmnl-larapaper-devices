@@ -82,6 +82,44 @@ class TestUserFlow:
         assert result2["reason"] == "already_configured"
 
 
+class TestValidationLogging:
+    async def test_logs_auth_error(self, hass, mock_client, caplog):
+        import logging
+        mock_client.return_value.get_devices.side_effect = LaraPaperAuthError("bad token")
+
+        with caplog.at_level(logging.WARNING, logger="custom_components.larapaper.config_flow"):
+            result = await hass.config_entries.flow.async_init(
+                DOMAIN, context={"source": config_entries.SOURCE_USER}
+            )
+            await hass.config_entries.flow.async_configure(result["flow_id"], VALID_INPUT)
+
+        assert any("auth" in r.message.lower() for r in caplog.records)
+
+    async def test_logs_api_error(self, hass, mock_client, caplog):
+        import logging
+        mock_client.return_value.get_devices.side_effect = LaraPaperApiError("timeout")
+
+        with caplog.at_level(logging.ERROR, logger="custom_components.larapaper.config_flow"):
+            result = await hass.config_entries.flow.async_init(
+                DOMAIN, context={"source": config_entries.SOURCE_USER}
+            )
+            await hass.config_entries.flow.async_configure(result["flow_id"], VALID_INPUT)
+
+        assert any("connect" in r.message.lower() for r in caplog.records)
+
+    async def test_logs_unknown_error(self, hass, mock_client, caplog):
+        import logging
+        mock_client.return_value.get_devices.side_effect = RuntimeError("unexpected")
+
+        with caplog.at_level(logging.ERROR, logger="custom_components.larapaper.config_flow"):
+            result = await hass.config_entries.flow.async_init(
+                DOMAIN, context={"source": config_entries.SOURCE_USER}
+            )
+            await hass.config_entries.flow.async_configure(result["flow_id"], VALID_INPUT)
+
+        assert any("unexpected" in r.message.lower() for r in caplog.records)
+
+
 class TestReauthFlow:
     async def test_reauth_confirm_updates_token(self, hass, mock_client):
         entry_result = await hass.config_entries.flow.async_init(

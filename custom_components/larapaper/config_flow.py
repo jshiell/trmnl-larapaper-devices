@@ -1,6 +1,7 @@
 """Config flow for LaraPaper integration."""
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -10,6 +11,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import LaraPaperApiClient, LaraPaperAuthError, LaraPaperApiError
 from .const import CONF_BEARER_TOKEN, CONF_SERVER_URL, DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class LaraPaperConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -66,10 +69,13 @@ class LaraPaperConfigFlow(ConfigFlow, domain=DOMAIN):
         client = LaraPaperApiClient(server_url, bearer_token, session)
         try:
             await client.get_devices()
-        except LaraPaperAuthError:
+        except LaraPaperAuthError as err:
+            _LOGGER.warning("Authentication failed for %s: %s", server_url, err)
             return {"base": "invalid_auth"}
-        except LaraPaperApiError:
+        except LaraPaperApiError as err:
+            _LOGGER.error("Cannot connect to %s: %s", server_url, err)
             return {"base": "cannot_connect"}
-        except Exception:
+        except Exception as err:
+            _LOGGER.exception("Unexpected error during validation for %s: %s", server_url, err)
             return {"base": "unknown"}
         return {}
