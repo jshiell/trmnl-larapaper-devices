@@ -32,7 +32,7 @@ For each device:
 
 1. Open HACS in your Home Assistant instance.
 2. Go to **Integrations** → click the three-dot menu → **Custom repositories**.
-3. Add `https://github.com/jamesshiell/trmnl-larapaper-devices` with category **Integration**.
+3. Add `https://github.com/jshiell/trmnl-larapaper-devices` with category **Integration**.
 4. Search for **LaraPaper** in HACS and install it.
 5. Restart Home Assistant.
 
