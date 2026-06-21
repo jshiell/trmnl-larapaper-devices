@@ -1,0 +1,28 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to LaraPaper",
+        "data": {
+          "server_url": "Server URL",
+          "bearer_token": "Bearer Token"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate LaraPaper",
+        "data": {
+          "bearer_token": "Bearer Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid authentication token",
+      "cannot_connect": "Failed to connect to server",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This LaraPaper server is already configured",
+      "reauth_successful": "Re-authentication successful"
+    }
+  }
+}
